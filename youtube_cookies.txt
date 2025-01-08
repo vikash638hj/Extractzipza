@@ -9,3 +9,43 @@
 #HttpOnly_.youtube.com	TRUE	/	TRUE	1763195582	__Secure-3PSIDTS	sidts-CjIBQT4rX2YVmzoqRuAYynpD9XWsEWhB3h1jNpSUjrS__1dnk56UQSvYECf2QdNoPCW8TxAA
 #HttpOnly_.youtube.com	TRUE	/	TRUE	1766219582	LOGIN_INFO	AFmmF2swRQIgFtzgbe3mbsuMdKELjIjWXt_M-1k1I95ovSO2Ctig4HQCIQC0OttnyKDO3nUG2E1AjOq-VkUIY9spZnqIYic6k8h0bA:QUQ3MjNmd2c2cUhzc1NjbkRXU3dueF9jZ2c5TWFHVVFBZTVKTHVOTXdoei1fWjZERmwzRlphajZqanpWcl81T3lIYWRJd3ZWVDRXS0NCNDBPdERYblNMU2NDOUdvclFIUkRfdE0tc2htcTBIaGtfc0VzR0JFM3E0REdrLTRNRUFzOFV0V2hIbzVadW1ERFZfLUZuMGV1TDBDSVlVRzdYMTNB
 .youtube.com	TRUE	/	TRUE	1766219622	PREF	tz=Asia.Calcutta
+import os
+import subprocess
+import argparse
+from yt_dlp import YoutubeDL
+
+def download_video(url, output_path, cookie_file):
+    ydl_opts = {
+        'cookiefile': cookie_file,
+        'format': 'best',
+        'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
+        'postprocessors': [{
+            'key': 'FFmpegVideoConvertor',
+            'preferedformat': 'mp4',
+        }],
+        'external_downloader': 'aria2c',
+        'external_downloader_args': 'aria2c:-x 16 -j 32'
+    }
+
+    with YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+
+def main():
+    parser = argparse.ArgumentParser(description="Advanced download method for videos and files from specified URLs")
+    parser.add_argument('urls', type=str, nargs='+', help='URLs to download')
+    parser.add_argument('--output', type=str, default='downloads', help='Output directory for downloaded files')
+    parser.add_argument('--cookiefile', type=str, default='youtube_cookies.txt', help='Path to the cookie file')
+
+    args = parser.parse_args()
+
+    if not os.path.exists(args.output):
+        os.makedirs(args.output)
+
+    for url in args.urls:
+        if url.endswith('.m3u8'):
+            download_video(url, args.output, args.cookiefile)
+        else:
+            print(f"URL format not supported: {url}")
+
+if __name__ == "__main__":
+    main()
