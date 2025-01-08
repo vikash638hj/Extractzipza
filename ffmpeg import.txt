@@ -1,0 +1,24 @@
+ffmpeg
+import os
+import requests
+import subprocess
+from aiohttp import ClientSession
+
+async def download_m3u8(url, output):
+    cmd = f'ffmpeg -i "{url}" -c copy "{output}"'
+    subprocess.run(cmd, shell=True)
+
+@bot.on_message(filters.command(["Moni"]))
+async def account_login(bot: Client, m: Message):
+    # Existing code to handle other links...
+    
+    # Handle m3u8 links
+    for link in links:
+        if link.endswith(".m3u8"):
+            await download_m3u8(link, f"{file_name}.mp4")
+    
+    # Existing code to handle other links...
+
+# Run the bot
+if __name__ == "__main__":
+    asyncio.run(main())
