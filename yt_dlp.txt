@@ -1,0 +1,25 @@
+import yt_dlp
+
+cookie_file = 'youtube_cookies.txt'
+url = 'https://www.youtube.com/watch?v=nGFNZGe33n0'
+
+ydl_opts = {
+    'cookiefile': cookie_file,
+    'format': 'best',
+    'outtmpl': '%(title)s.%(ext)s',
+    'noplaylist': True,  # Ensure it only downloads the single video
+    'postprocessors': [
+        {
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        },
+        {
+            'key': 'FFmpegVideoConvertor',
+            'preferedformat': 'mp4',  # Convert video to mp4 format
+        }
+    ],
+}
+
+with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    ydl.download([url])
