@@ -250,9 +250,7 @@ async def account_login(bot: Client, m: Message):
           
             if "/master.mpd" in url:
                 cmd= f" yt-dlp -k --allow-unplayable-formats -f bestvideo.{quality} --fixup never {url} "
-                print("counted")
-
-            else https//appx1.arvind.eu.org/.../main.m3u8
+                print("counted") 
             
 
             if "edge.api.brightcove.com" in url:
